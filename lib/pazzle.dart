@@ -537,7 +537,6 @@ class _PuzzleState extends State<Puzzle> {
             ),
             IconButton(
                 onPressed: () {
-                  timer_cancel();
                 },
                 icon: Icon(Icons.volume_up)),
             IconButton(onPressed: () {}, icon: Icon(Icons.more_vert_rounded))
