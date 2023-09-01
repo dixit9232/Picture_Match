@@ -518,6 +518,8 @@ class _PuzzleState extends State<Puzzle> {
           },
         );
         return true;
+
+
       },
       child: Scaffold(
         appBar: AppBar(
