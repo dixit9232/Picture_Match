@@ -110,7 +110,9 @@ class _PuzzleState extends State<Puzzle> {
     return AlertDialog(
       title: Text(
           style: TextStyle(wordSpacing: 2),
-          "Your Time is Out, Are You Play Again?"),
+          "Time Out!",
+          textAlign: TextAlign.center),
+      content: Text("Are you play again?"),
       actions: [
         TextButton(
             onPressed: () {
@@ -123,10 +125,9 @@ class _PuzzleState extends State<Puzzle> {
             child: Text("No")),
         TextButton(
             onPressed: () {
-              lvlcheck();
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) {
-                  return lvl(widget.index - 1, widget.mode);
+                  return lvl(Match_puzzle.prefs!.getInt("${widget.mode}")??0, widget.mode);
                 },
               ));
             },
@@ -144,6 +145,7 @@ class _PuzzleState extends State<Puzzle> {
         tmp.add(temp[pos[1]]);
         if (temp.length == tmp.length) {
           setState(() {
+            timer_cancel();
             showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -174,6 +176,7 @@ class _PuzzleState extends State<Puzzle> {
         tmp.add(temp[pos[2]]);
         if (temp.length == tmp.length) {
           setState(() {
+            timer_cancel();
             showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -212,6 +215,7 @@ class _PuzzleState extends State<Puzzle> {
         tmp.add(temp[pos[3]]);
         if (tmp.length == temp.length) {
           setState(() {
+            timer_cancel();
             showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -258,6 +262,7 @@ class _PuzzleState extends State<Puzzle> {
         tmp.add(temp[pos[4]]);
         if (tmp.length == temp.length) {
           setState(() {
+            timer_cancel();
             showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -312,6 +317,7 @@ class _PuzzleState extends State<Puzzle> {
         tmp.add(temp[pos[5]]);
         if (tmp.length == temp.length) {
           setState(() {
+            timer_cancel();
             showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -424,25 +430,54 @@ class _PuzzleState extends State<Puzzle> {
   }
 
   timer_start() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {
-          count--;
-          if (count == 0) {
-            temp = List.filled(selectedImages.length, false);
-            timer.cancel();
-          }
-          if(count==0)
-            {
-              Timer.periodic(Duration(seconds: 1), (timer) {
-                setState(() {
-                  count++;
-                });
-              });
-            }
+    for (count = 7; count > 0; count--) {
+      await Future.delayed(Duration(seconds: 1));
+      setState(() {});
+    }
+    if (count == 0) {
+      temp = List.filled(temp.length, false);
+      if (widget.mode == "No Time Limit") {
+        timer = Timer.periodic(Duration(seconds: 1), (timer) {
+          setState(() {
+            count++;
+          });
         });
       }
-    });
+      if (widget.mode == "Normal") {
+        timer = Timer.periodic(Duration(seconds: 1), (timer) {
+          setState(() {
+            count++;
+            if (count >= end_normal) {
+              timer_cancel();
+              showDialog(
+                context: context,
+                builder: (context) => timeout_alart(),
+              );
+            }
+          });
+        });
+      }
+      if (widget.mode == "Hard") {
+        timer = Timer.periodic(Duration(seconds: 1), (timer) {
+          setState(() {
+            count++;
+            if (count >= end_hard) {
+              timer_cancel();
+              showDialog(
+                context: context,
+                builder: (context) => timeout_alart(),
+              );
+            }
+          });
+        });
+      }
+    }
+    setState(() {});
+  }
+
+  timer_cancel() {
+    timer!.cancel();
+    setState(() {});
   }
 
   @override
@@ -456,7 +491,7 @@ class _PuzzleState extends State<Puzzle> {
 
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         showDialog(
           context: context,
           builder: (context) {
@@ -481,7 +516,8 @@ class _PuzzleState extends State<Puzzle> {
             );
           },
         );
-        return true; },
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
@@ -498,7 +534,11 @@ class _PuzzleState extends State<Puzzle> {
                 style: Theme.of(context).textTheme.displayLarge,
               ),
             ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.volume_up)),
+            IconButton(
+                onPressed: () {
+                  timer_cancel();
+                },
+                icon: Icon(Icons.volume_up)),
             IconButton(onPressed: () {}, icon: Icon(Icons.more_vert_rounded))
           ],
         ),
@@ -526,23 +566,42 @@ class _PuzzleState extends State<Puzzle> {
                           data: SliderTheme.of(context).copyWith(
                               trackHeight: 10,
                               thumbColor: Colors.transparent,
-                              thumbShape:
-                                  RoundSliderThumbShape(enabledThumbRadius: 0.0)),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 0.0)),
                         );
                       },
                       interval: Duration(seconds: 1),
                       onFinished: () async {
+                        slider_time = false;
                         next_count = true;
                         setState(() {});
                       },
                     )
-                  : Text(""),
+                  : SliderTheme(
+                      child: Slider(
+                        value: count.toDouble(),
+                        max: (widget.mode == "Normal")
+                            ? end_normal.toDouble()
+                            : (widget.mode == "Hard")
+                                ? end_hard.toDouble()
+                                : double.infinity,
+                        min: 0,
+                        activeColor: Theme.of(context).primaryColor,
+                        inactiveColor: Colors.teal.shade100,
+                        onChanged: (double value) {},
+                      ),
+                      data: SliderTheme.of(context).copyWith(
+                          trackHeight: 10,
+                          thumbColor: Colors.transparent,
+                          thumbShape:
+                              RoundSliderThumbShape(enabledThumbRadius: 0.0)),
+                    ),
               Expanded(
                 child: GridView.builder(
                   itemCount: selectedImages.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisSpacing: 1,
-                      childAspectRatio: 1.2,
+                      childAspectRatio:(widget.index>=6)?1:(widget.index==5)?1.2:1.8,
                       mainAxisSpacing: 1,
                       crossAxisCount: (widget.index == 0)
                           ? 3
@@ -725,7 +784,9 @@ class _PuzzleState extends State<Puzzle> {
                           decoration: BoxDecoration(
                               color: Colors.tealAccent.shade700,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(width: 1, color: Colors.black)),
+                              border:
+                                  Border.all(width: 1, color: Colors.black)),
+                          child: Image.asset("${selectedImages[index]}"),
                         ),
                       ),
                       child: Container(
