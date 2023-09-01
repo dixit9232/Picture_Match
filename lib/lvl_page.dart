@@ -15,36 +15,36 @@ class lvl extends StatefulWidget {
 }
 
 class _lvlState extends State<lvl> {
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(onWillPop: () async{
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Are You Sure To Exit"),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("No")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(
-                      builder: (context) {
-                        return Match_puzzle();
-                      },
-                    ));
-                  },
-                  child: Text("Yes"))
-            ],
-          );
-        },
-      );
-      return true;
-    },
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Are You Sure To Exit"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("No")),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) {
+                          return Match_puzzle();
+                        },
+                      ));
+                    },
+                    child: Text("Yes"))
+              ],
+            );
+          },
+        );
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
@@ -113,13 +113,13 @@ class _lvlState extends State<lvl> {
                       child: ListView.builder(
                         itemCount: 10,
                         itemBuilder: (context, index) {
-                          return
-                            (widget.index >= index1 * 10 + index)
+                          return (widget.index >= index1 * 10 + index)
                               ? InkWell(
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) {
-                                        return Puzzle(index, widget.mode, index1);
+                                        return Puzzle(
+                                            index, widget.mode, index1);
                                       },
                                     ));
                                   },
@@ -129,32 +129,35 @@ class _lvlState extends State<lvl> {
                                       width: 170,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor),
-                                      child: (widget.index > index1 * 10 + index)
-                                          ? Text(
-                                              "Level ${index1 * 10 + index + 1}-${Match_puzzle.prefs!.getString("${widget.mode}-${index1 * 10 + index}")}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displayLarge,
-                                            )
-                                          : Text(
-                                              "Level ${index1 * 10 + index + 1}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displayLarge,
-                                            )),
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      child:
+                                          (widget.index > index1 * 10 + index)
+                                              ? Text(
+                                                  "Level ${index1 * 10 + index + 1}-${Match_puzzle.prefs!.getString("${widget.mode}-${index1 * 10 + index}")}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displayLarge,
+                                                )
+                                              : Text(
+                                                  "Level ${index1 * 10 + index + 1}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displayLarge,
+                                                )),
                                 )
                               : Container(
                                   alignment: Alignment.center,
                                   margin: EdgeInsets.all(10),
                                   width: 170,
                                   height: 50,
-                                  decoration:
-                                      BoxDecoration(color: Colors.teal.shade100),
+                                  decoration: BoxDecoration(
+                                      color: Colors.teal.shade100),
                                   child: Text(
                                     "Level ${index1 * 10 + index + 1}",
-                                    style:
-                                        Theme.of(context).textTheme.displayLarge,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
                                   ));
                         },
                       ),

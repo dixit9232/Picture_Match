@@ -127,7 +127,8 @@ class _PuzzleState extends State<Puzzle> {
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) {
-                  return lvl(Match_puzzle.prefs!.getInt("${widget.mode}")??0, widget.mode);
+                  return lvl(Match_puzzle.prefs!.getInt("${widget.mode}") ?? 0,
+                      widget.mode);
                 },
               ));
             },
@@ -601,7 +602,11 @@ class _PuzzleState extends State<Puzzle> {
                   itemCount: selectedImages.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisSpacing: 1,
-                      childAspectRatio:(widget.index>=6)?1:(widget.index==5)?1.2:1.8,
+                      childAspectRatio: (widget.index >= 6)
+                          ? 1
+                          : (widget.index == 5)
+                              ? 1.2
+                              : 1.8,
                       mainAxisSpacing: 1,
                       crossAxisCount: (widget.index == 0)
                           ? 3
