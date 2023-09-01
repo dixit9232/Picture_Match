@@ -786,7 +786,6 @@ class _PuzzleState extends State<Puzzle> {
                               borderRadius: BorderRadius.circular(10),
                               border:
                                   Border.all(width: 1, color: Colors.black)),
-                          child: Image.asset("${selectedImages[index]}"),
                         ),
                       ),
                       child: Container(
