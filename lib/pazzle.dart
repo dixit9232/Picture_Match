@@ -784,7 +784,6 @@ class _PuzzleState extends State<Puzzle> {
                             five();
                           }
                           setState(() {});
-
                         },
                         child: Container(
                           decoration: BoxDecoration(

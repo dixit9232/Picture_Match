@@ -108,7 +108,6 @@ class _lvlState extends State<lvl> {
                                       color: Theme.of(context).primaryColor)),
                         ),
                       ],
-
                     ),
                     Expanded(
                       child: ListView.builder(
